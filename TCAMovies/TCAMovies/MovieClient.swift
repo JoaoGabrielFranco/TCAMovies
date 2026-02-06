@@ -14,6 +14,7 @@ struct MovieClient {
 }
 extension MovieClient: DependencyKey {
     static let liveValue = MovieClient(
+    
         fetchPopularMovies: {
             let apiKey = "babc277d0d8a570e611160f511084b7b"
             let url = URL(string: "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&language=en-US")!

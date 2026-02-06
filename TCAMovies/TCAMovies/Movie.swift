@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct Movie: Codable, Identifiable, Equatable {
+struct Movie: Codable, Identifiable, Equatable, Sendable {
     let id: Int
     let title: String
     let overview: String?
@@ -15,7 +15,7 @@ struct Movie: Codable, Identifiable, Equatable {
     let releaseDate: String?
     
     
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, Sendable {
         case id, title, overview
         case posterPath = "poster_path"
         case voteAverage = "vote_average"
@@ -29,6 +29,6 @@ struct Movie: Codable, Identifiable, Equatable {
     
 }
 
-struct MovieResponse: Codable, Equatable {
+struct MovieResponse: Codable, Equatable, Sendable {
     let results: [Movie]
 }

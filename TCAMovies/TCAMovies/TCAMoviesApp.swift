@@ -12,7 +12,7 @@ import ComposableArchitecture
 struct MovieApp: App {
 var body: some Scene {
     WindowGroup {
-        MovieView(
+        MovieFeature.View(
             store: Store(initialState: MovieFeature.State()) {
                 MovieFeature()
             }
