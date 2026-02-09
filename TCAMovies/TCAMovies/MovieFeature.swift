@@ -20,6 +20,7 @@ struct MovieFeature {
     enum Action: Equatable {
         case fetchMovies
         case moviesResponse(TaskResult<[Movie]>)
+   //     case searchMovies(moviesResponse: [Movie])
     }
     
     @Dependency(\.movieClient) var movieClient
@@ -44,6 +45,12 @@ struct MovieFeature {
                 state.isLoading = false
                 state.errorMessage = error.localizedDescription
                 return .none
+           // case .searchMovies:
+                
+                
+                
+            
+                
             }
             
         }

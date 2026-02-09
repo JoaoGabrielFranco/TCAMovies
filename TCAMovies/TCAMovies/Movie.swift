@@ -18,7 +18,7 @@ struct Movie: Codable, Identifiable, Equatable, Sendable {
     enum CodingKeys: String, CodingKey, Sendable {
         case id, title, overview
         case posterPath = "poster_path"
-        case voteAverage = "vote_average"
+        case voteAverage = "vote_average-"
         case releaseDate = "release_date"
     }
     

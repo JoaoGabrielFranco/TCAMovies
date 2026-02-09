@@ -49,7 +49,12 @@ extension MovieFeature.View {
             
             .frame(width: 300, height: 300)
             Text(movie.title).font(.headline)
-            Text(LocalizedStringKey( String(movie.voteAverage!)))
+            if let vote = movie.voteAverage {
+                Text("\(vote)")
+            } else {
+                Text("0.0")
+            }
+            
         }
     }
 }
