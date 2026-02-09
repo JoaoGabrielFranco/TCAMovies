@@ -6,29 +6,27 @@
 //
 import Foundation
 
-struct Movie: Codable, Identifiable, Equatable, Sendable {
-    let id: Int
-    let title: String
-    let overview: String?
-    let posterPath: String?
-    let voteAverage: Double?
-    let releaseDate: String?
-    
-    
-    enum CodingKeys: String, CodingKey, Sendable {
-        case id, title, overview
-        case posterPath = "poster_path"
-        case voteAverage = "vote_average-"
-        case releaseDate = "release_date"
-    }
-    
-    var posterURL: URL? {
-        guard let posterPath else { return nil }
-        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")
-    }
-    
+struct Movie: Codable, Identifiable, Equatable {
+let id: Int
+let title: String
+let overview: String?
+let posterPath: String?
+let voteAverage: Double?
+let releaseDate: String?
+
+enum CodingKeys: String, CodingKey {
+    case id, title, overview
+    case posterPath = "poster_path"
+    case voteAverage = "vote_average"
+    case releaseDate = "release_date"
 }
 
-struct MovieResponse: Codable, Equatable, Sendable {
-    let results: [Movie]
+var posterURL: URL? {
+    guard let posterPath else { return nil }
+    return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")
+}
+}
+
+struct MovieResponse: Codable, Equatable {
+let results: [Movie]
 }

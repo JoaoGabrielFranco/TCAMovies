@@ -12,10 +12,10 @@ extension MovieFeature {
     
     struct View: SwiftUI.View {
         
-        let store: StoreOf<MovieFeature>
+        @Bindable var store: StoreOf<MovieFeature>
         
         var body: some SwiftUI.View {
-            NavigationView{
+            NavigationStack{
                 List {
                     
                     if store.isLoading {
@@ -24,13 +24,23 @@ extension MovieFeature {
                         Text("\(errorMessage)").foregroundColor(.red)
                     } else {
                         ForEach(store.movies){ movie in
-                            movieCard(movie: movie)
+                            Button {
+                                store.send(.movieTapped(movie))
+                            } label: {
+                                MovieRowView(movie: movie)
+                            }
                         }
                     }
                 }
+                .navigationTitle("Popular Movies")
                 .onAppear() {
                     store.send(.fetchMovies)
-                }.navigationTitle("Popular Movies")
+                }
+                .navigationDestination(
+                    item: $store.scope(state: \.movieDetail, action: \.movieDetail)
+                ) { detailStore in
+                    MovieDetailView(store: detailStore)
+                }
             }
         }
     }
@@ -58,6 +68,53 @@ extension MovieFeature.View {
         }
     }
 }
+struct MovieRowView: View {
+    let movie: Movie
+    var body: some View {
+        HStack {
+            AsyncImage(url: movie.posterURL) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.gray.opacity(0.3)
+            }
+            .frame(width: 80, height: 120)
+            .cornerRadius(8)
+            
+            VStack(alignment: .leading, spacing: 6) {
+                Text(movie.title)
+                    .font(.headline)
+                    .lineLimit(2)
+                
+                if let releaseDate = movie.releaseDate {
+                    Text(releaseDate)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                if let rating = movie.voteAverage {
+                    HStack(spacing: 4) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                        Text(String(format: "%.1f", rating))
+                    }
+                    .font(.caption)
+                }
+                
+                if let overview = movie.overview {
+                    Text(overview)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(3)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+    
+
 
 #Preview {
     MovieFeature.View(
