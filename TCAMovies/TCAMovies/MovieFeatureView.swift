@@ -23,7 +23,7 @@ extension MovieFeature {
                     } else if let errorMessage = store.errorMessage {
                         Text("\(errorMessage)").foregroundColor(.red)
                     } else {
-                        ForEach(store.movies){ movie in
+                        ForEach(store.filteredMovies){ movie in
                             Button {
                                 store.send(.movieTapped(movie))
                             } label: {
@@ -33,6 +33,7 @@ extension MovieFeature {
                     }
                 }
                 .navigationTitle("Popular Movies")
+                .searchable(text: $store.searchText, prompt: "search movie")
                 .onAppear() {
                     store.send(.fetchMovies)
                 }

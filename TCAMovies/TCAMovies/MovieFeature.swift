@@ -15,16 +15,26 @@ struct State: Equatable {
     var isLoading = false
     var errorMessage: String?
     @Presents var movieDetail: MovieDetailFeature.State?
+    var searchText = ""
+    var filteredMovies: [Movie] {
+        if searchText.isEmpty{
+            return movies
+        } else {
+            return movies.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
 }
 
-enum Action: Equatable {
+enum Action: BindableAction, Equatable {
     case fetchMovies
+    case binding(BindingAction<State>)
     case moviesResponse(Result<[Movie], Error>)
     case movieTapped(Movie)
     case movieDetail(PresentationAction<MovieDetailFeature.Action>)
     
     static func == (lhs: Action, rhs: Action) -> Bool {
         switch (lhs, rhs) {
+        case (.binding(let l), .binding(let r)): return l == r
         case (.fetchMovies, .fetchMovies):
             return true
         case let (.moviesResponse(.success(lhsMovies)), .moviesResponse(.success(rhsMovies))):
@@ -44,8 +54,13 @@ enum Action: Equatable {
 @Dependency(\.movieClient) var movieClient
 
 var body: some Reducer<State, Action> {
+    
+    BindingReducer()
+    
     Reduce { state, action in
         switch action {
+        case .binding:
+            return .none
         case .fetchMovies:
             state.isLoading = true
             state.errorMessage = nil
@@ -72,7 +87,6 @@ var body: some Reducer<State, Action> {
         case let .movieTapped(movie):
             state.movieDetail = MovieDetailFeature.State(movieId: movie.id)
             return .none
-            
         case .movieDetail:
             return .none
         }
