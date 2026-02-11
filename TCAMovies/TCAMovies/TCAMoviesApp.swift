@@ -10,13 +10,13 @@ import ComposableArchitecture
 
 @main
 struct MovieApp: App {
-var body: some Scene {
-    WindowGroup {
-        MovieFeature.View(
-            store: Store(initialState: MovieFeature.State()) {
-                MovieFeature()
-            }
-        )
+    var body: some Scene {
+        WindowGroup {
+            MovieFeature.View(
+                store: Store(initialState: MovieFeature.State()) {
+                    MovieFeature()
+                }
+            )
+        }
     }
-}
 }
