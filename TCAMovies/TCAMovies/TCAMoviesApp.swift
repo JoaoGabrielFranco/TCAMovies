@@ -7,16 +7,29 @@
 
 import SwiftUI
 import ComposableArchitecture
+import FirebaseCore
+import FirebaseCrashlytics
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        FirebaseApp.configure()
+        Crashlytics.crashlytics()
+        print("Firebase Configurado!")
+        return true
+    }
+}
 
 @main
 struct MovieApp: App {
-var body: some Scene {
-    WindowGroup {
-        MovieFeature.View(
-            store: Store(initialState: MovieFeature.State()) {
-                MovieFeature()
-            }
-        )
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    var body: some Scene {
+        WindowGroup {
+            MovieFeature.View(
+                store: Store(initialState: MovieFeature.State()) {
+                    MovieFeature()
+                }
+            )
+        }
     }
-}
 }

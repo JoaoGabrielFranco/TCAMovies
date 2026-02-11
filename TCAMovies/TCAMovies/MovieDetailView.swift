@@ -116,10 +116,10 @@ struct MovieDetailView: View {
                 }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .task {
-            store.send(.fetchMovieDetails)
+        .onAppear {
+            store.send(.onAppear)
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func formatCurrency(_ value: Int) -> String {

@@ -13,6 +13,7 @@ struct MovieDetailFeature {
     @ObservableState
     struct State: Equatable {
         let movieId: Int
+        let movieTitle: String
         var movieDetail: MovieDetail?
         var isLoading = false
         var errorMessage: String?
@@ -21,7 +22,7 @@ struct MovieDetailFeature {
     enum Action: Equatable {
         case fetchMovieDetails
         case movieDetailsResponse(Result<MovieDetail, Error>)
-        
+        case onAppear
         static func == (lhs: Action, rhs: Action) -> Bool {
             switch (lhs, rhs) {
             case (.fetchMovieDetails, .fetchMovieDetails):
@@ -35,7 +36,7 @@ struct MovieDetailFeature {
             }
         }
     }
-    
+    @Dependency(\.analytics) var analytics
     @Dependency(\.movieClient) var movieClient
     
     var body: some Reducer<State, Action> {
@@ -52,6 +53,15 @@ struct MovieDetailFeature {
                     } catch {
                         await send(.movieDetailsResponse(.failure(error)))
                     }
+                }
+            case .onAppear:
+                return .run { [title = state.movieTitle, id = state.movieId] send in
+                    await analytics.logEvent("view_movie", [
+                        "screen_name": "Movies_Detail",
+                        "movie_title": title,
+                        "movie_id": id
+                    ])
+                    await send(.fetchMovieDetails)
                 }
                 
             case let .movieDetailsResponse(.success(movieDetail)):

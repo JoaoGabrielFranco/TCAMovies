@@ -13,7 +13,6 @@ extension MovieFeature {
     struct View: SwiftUI.View {
         
         @Bindable var store: StoreOf<MovieFeature>
-        
         var body: some SwiftUI.View {
             NavigationStack{
                 List {
@@ -34,8 +33,15 @@ extension MovieFeature {
                 }
                 .navigationTitle("Popular Movies")
                 .searchable(text: $store.searchText, prompt: "search movie")
-                .onAppear() {
-                    store.send(.fetchMovies)
+                .onAppear {
+                    store.send(.onAppear)
+                }
+                .toolbar {
+                    Button {
+                        store.send(.fatalErrorTapped)
+                    } label: {
+                        Text("fatal error button")
+                    }
                 }
                 .navigationDestination(
                     item: $store.scope(state: \.movieDetail, action: \.movieDetail)
@@ -114,7 +120,7 @@ struct MovieRowView: View {
         .padding(.vertical, 4)
     }
 }
-    
+
 
 
 #Preview {
