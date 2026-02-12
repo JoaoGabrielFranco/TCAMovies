@@ -14,7 +14,7 @@ struct MovieDetail: Codable, Equatable, Identifiable {
     let posterPath: String?
     let backdropPath: String?
     let voteAverage: Double?
-    let releaseDate: String?
+    let releaseDate: Date?
     let runtime: Int?
     let genres: [Genre]?
     let budget: Int?
@@ -29,25 +29,54 @@ struct MovieDetail: Codable, Equatable, Identifiable {
         case releaseDate = "release_date"
     }
     
+    enum Error: Swift.Error, Equatable, Sendable {
+        case generic(String)
+        
+        // Inicializador conveniente para converter erros do sistema
+        init(_ error: Swift.Error) {
+            self = .generic(error.localizedDescription)
+        }
+    }
+    
     var posterURL: URL? {
         guard let posterPath else { return nil }
-        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")
+        return URL.TMDB.imageURL(path: posterPath, size: .w500)
     }
     
     var backdropURL: URL? {
         guard let backdropPath else { return nil }
-        return URL(string: "https://image.tmdb.org/t/p/original\(backdropPath)")
+        return URL.TMDB.imageURL(path: backdropPath, size: .original)
     }
-    
+    var releaseDateFormatted: String {
+        guard let releaseDate else { return "Unknown"}
+        
+        return releaseDate.formatted(
+            .dateTime
+                .year()
+                .month(.abbreviated)
+                .day()
+                .locale(Locale(identifier: "en_US"))
+        )
+    }
     var runtimeFormatted: String? {
         guard let runtime else { return nil }
-        let hours = runtime / 60
-        let minutes = runtime % 60
-        return "\(hours)h \(minutes)min"
+        
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.hour, .minute]
+        
+        
+        var calendar = Calendar.current
+        calendar.locale = Locale(identifier: "en_US")
+        formatter.calendar = calendar
+        
+        let timeInSeconds = TimeInterval(runtime * 60)
+        return formatter.string(from: timeInSeconds)
+    }
+    struct Genre: Codable, Equatable, Identifiable {
+        let id: Int
+        let name: String
     }
 }
 
-struct Genre: Codable, Equatable, Identifiable {
-    let id: Int
-    let name: String
-}
+

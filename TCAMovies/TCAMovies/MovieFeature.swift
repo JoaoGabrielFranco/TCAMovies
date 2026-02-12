@@ -12,15 +12,20 @@ struct MovieFeature {
     @ObservableState
     struct State: Equatable {
         var movies: [Movie] = []
-        var isLoading = false
-        var errorMessage: String?
-        @Presents var movieDetail: MovieDetailFeature.State?
+        var status: Status = .default
+        
+        @Presents var movieDetail: MovieDetailsFeature.State?
         var searchText = ""
+        
         var filteredMovies: [Movie] {
             if searchText.isEmpty{
                 return movies
             } else {
-                return movies.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+                return movies.filter { movie in
+                    let titleMatch = movie.title.localizedCaseInsensitiveContains(searchText)
+                    let overviewMatch = movie.overview?.localizedCaseInsensitiveContains(searchText) ?? false
+                    return titleMatch || overviewMatch
+                }
             }
         }
     }
@@ -28,28 +33,11 @@ struct MovieFeature {
     enum Action: BindableAction, Equatable {
         case fetchMovies
         case binding(BindingAction<State>)
-        case moviesResponse(Result<[Movie], Error>)
+        case handleMoviesResponse(Result<[Movie], Movie.Error>)
         case movieTapped(Movie)
-        case movieDetail(PresentationAction<MovieDetailFeature.Action>)
+        case movieDetail(PresentationAction<MovieDetailsFeature.Action>)
         case onAppear
         case fatalErrorTapped
-        static func == (lhs: Action, rhs: Action) -> Bool {
-            switch (lhs, rhs) {
-            case (.binding(let l), .binding(let r)): return l == r
-            case (.fetchMovies, .fetchMovies):
-                return true
-            case let (.moviesResponse(.success(lhsMovies)), .moviesResponse(.success(rhsMovies))):
-                return lhsMovies == rhsMovies
-            case (.moviesResponse(.failure), .moviesResponse(.failure)):
-                return true
-            case let (.movieTapped(lhsMovie), .movieTapped(rhsMovie)):
-                return lhsMovie == rhsMovie
-            case let (.movieDetail(lhsAction), .movieDetail(rhsAction)):
-                return lhsAction == rhsAction
-            default:
-                return false
-            }
-        }
     }
     
     @Dependency(\.analytics) var analytics
@@ -67,33 +55,47 @@ struct MovieFeature {
                 
             case .onAppear:
                 return .run { send in
-                   await analytics.logEvent("screen_view", [
+                    await analytics.logEvent("screen_view", [
                         "screen_name": "PopularMovies",
                         "screen_class": "MovieFeatureView"
                     ])
                     await send(.fetchMovies)
                 }
             case .fetchMovies:
-                state.isLoading = true
-                state.errorMessage = nil
+                // Mudança de estado limpa
+                state.status = .loading
                 
                 return .run { send in
                     do {
                         let movies = try await movieClient.fetchPopularMovies()
-                        await send(.moviesResponse(.success(movies)))
+                        await send(.handleMoviesResponse(.success(movies)))
                     } catch {
-                        await send(.moviesResponse(.failure(error)))
+                        // Conversão para o erro customizado
+                        let customError = Movie.Error(error)
+                        await send(.handleMoviesResponse(.failure(customError)))
                     }
                 }
                 
-            case let .moviesResponse(.success(movies)):
-                state.isLoading = false
-                state.movies = movies
-                return .none
-                
-            case let .moviesResponse(.failure(error)):
-                state.isLoading = false
-                state.errorMessage = error.localizedDescription
+                // Caso unificado de Handle
+            case let .handleMoviesResponse(result):
+                switch result {
+                case let .success(movies):
+                    state.status = .default
+                    state.movies = movies
+                    
+                case let .failure(error):
+                    // Extração da mensagem do erro customizado
+                    let message: String
+                    switch error {
+                    case let .generic(msg): message = msg
+                    }
+                    
+                    state.status = .toast(ToastConfiguration(
+                        title: "Error",
+                        message: message,
+                        type: .error
+                    ))
+                }
                 return .none
                 
             case .fatalErrorTapped:
@@ -104,17 +106,15 @@ struct MovieFeature {
                     "screen_class": "MovieFeatureView",
                     "movie_title": movie.title
                 ])
-                state.movieDetail = MovieDetailFeature.State(
-                    movieId: movie.id,
-                    movieTitle: movie.title
-                )
+                state.movieDetail = .init(movieID: movie.id, movieTitle: movie.title)
+                
                 return .none
             case .movieDetail:
                 return .none
             }
         }
         .ifLet(\.$movieDetail, action: \.movieDetail) {
-            MovieDetailFeature()
+            MovieDetailsFeature()
         }
     }
 }
