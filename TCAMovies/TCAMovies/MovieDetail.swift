@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct MovieDetail: Codable, Equatable, Identifiable {
-    let id: Int
-    let title: String
-    let overview: String?
-    let posterPath: String?
-    let backdropPath: String?
-    let voteAverage: Double?
-    let releaseDate: Date?
-    let runtime: Int?
-    let genres: [Genre]?
-    let budget: Int?
-    let revenue: Int?
-    let tagline: String?
+public struct MovieDetail: Codable, Equatable, Identifiable {
+    public let id: Int
+    public let title: String
+    public let overview: String?
+    public let posterPath: String?
+    public let backdropPath: String?
+    public let voteAverage: Double?
+    public let releaseDate: Date?
+    public let runtime: Int?
+    public let genres: [Genre]?
+    public let budget: Int?
+    public let revenue: Int?
+    public let tagline: String?
     
     enum CodingKeys: String, CodingKey {
         case id, title, overview, runtime, genres, budget, revenue, tagline
@@ -29,7 +29,7 @@ struct MovieDetail: Codable, Equatable, Identifiable {
         case releaseDate = "release_date"
     }
     
-    enum Error: Swift.Error, Equatable, Sendable {
+    public enum Error: Swift.Error, Equatable, Sendable {
         case generic(String)
         
         // Inicializador conveniente para converter erros do sistema
@@ -73,9 +73,9 @@ struct MovieDetail: Codable, Equatable, Identifiable {
         let timeInSeconds = TimeInterval(runtime * 60)
         return formatter.string(from: timeInSeconds)
     }
-    struct Genre: Codable, Equatable, Identifiable {
-        let id: Int
-        let name: String
+    public struct Genre: Codable, Equatable, Identifiable {
+        public let id: Int
+        public let name: String
     }
 }
 

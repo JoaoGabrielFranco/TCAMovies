@@ -17,7 +17,7 @@ extension MovieFeature {
             NavigationStack{
                 List {
                     
-                    if store.isLoading {
+                    if store.status == .loading {
                         ProgressView().frame(width:300, height: 300)
                     } else if let errorMessage = store.errorMessage {
                         Text("\(errorMessage)").foregroundColor(.red)
@@ -46,7 +46,7 @@ extension MovieFeature {
                 .navigationDestination(
                     item: $store.scope(state: \.movieDetail, action: \.movieDetail)
                 ) { detailStore in
-                    MovieDetailView(store: detailStore)
+                    MovieDetailsFeature.View(store: detailStore)
                 }
             }
         }
@@ -75,6 +75,7 @@ extension MovieFeature.View {
         }
     }
 }
+
 struct MovieRowView: View {
     let movie: Movie
     var body: some View {
@@ -94,11 +95,10 @@ struct MovieRowView: View {
                     .font(.headline)
                     .lineLimit(2)
                 
-                if let releaseDate = movie.releaseDate {
-                    Text(releaseDate)
+                Text(movie.releaseDateFormatted)
                         .font(.caption)
                         .foregroundColor(.secondary)
-                }
+                
                 
                 if let rating = movie.voteAverage {
                     HStack(spacing: 4) {

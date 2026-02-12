@@ -13,6 +13,15 @@ struct MovieFeature {
     struct State: Equatable {
         var movies: [Movie] = []
         var status: Status = .default
+        public var isLoading: Bool {
+            return status == .loading
+        }
+        public var errorMessage: String? {
+            if case let .toast(config) = status {
+                return config?.message
+            }
+            return nil
+        }
         
         @Presents var movieDetail: MovieDetailsFeature.State?
         var searchText = ""

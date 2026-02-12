@@ -7,15 +7,15 @@
 import Foundation
 
 // MARK: - Properties
-struct Movie: Codable, Identifiable, Equatable {
-    let id: Int
-    let title: String
-    let overview: String?
-    let posterPath: String?
-    let voteAverage: Double?
-    let releaseDate: Date?
+public struct Movie: Codable, Identifiable, Equatable {
+    public let id: Int
+    public let title: String
+    public let overview: String?
+    public let posterPath: String?
+    public let voteAverage: Double?
+    public let releaseDate: Date?
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case id, title, overview
         case posterPath = "poster_path"
         case voteAverage = "vote_average"
@@ -28,7 +28,17 @@ struct Movie: Codable, Identifiable, Equatable {
             self = .generic(error.localizedDescription)
         }
     }
-    
+    var releaseDateFormatted: String {
+        guard let releaseDate else { return "Unknown"}
+        
+        return releaseDate.formatted(
+            .dateTime
+                .year()
+                .month(.abbreviated)
+                .day()
+                .locale(Locale(identifier: "en_US"))
+        )
+    }
     var posterURL: URL? {
         guard let posterPath else { return nil }
         return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")

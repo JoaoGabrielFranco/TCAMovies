@@ -24,7 +24,6 @@ extension DependencyValues {
 extension AnalyticsClient: DependencyKey {
     static let liveValue = AnalyticsClient(
         logEvent: { name, params in
-            // Aqui chamamos o Firebase de verdade
             Analytics.logEvent(name, parameters: params)
         }
     )

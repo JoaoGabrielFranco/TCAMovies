@@ -9,26 +9,26 @@ import Foundation
 import ComposableArchitecture
 
 @Reducer
-struct MovieDetailsFeature {
+public struct MovieDetailsFeature {
     @ObservableState
-    struct State: Equatable {
-        let movieID: Int
-        let movieTitle: String
-        var movieDetail: MovieDetail?
-        var status: Status = .default
-        var isLoading: Bool {
+    public struct State: Equatable {
+       public let movieID: Int
+        public let movieTitle: String
+        public var movieDetail: MovieDetail?
+        public var status: Status = .default
+        public var isLoading: Bool {
             return status == .loading
         }
-        var errorMessage: String? {
+        public var errorMessage: String? {
             if case let .toast(config) = status {
                 return config?.message
             }
             return nil
         }
     }
-
     
-    enum Action: Equatable {
+    
+    public enum Action: Equatable {
         case fetchMovieDetails
         case handleMovieDetailsResponse(Result<MovieDetail, MovieDetail.Error>)
         case onAppear
@@ -36,7 +36,7 @@ struct MovieDetailsFeature {
     @Dependency(\.analytics) var analytics
     @Dependency(\.movieClient) var movieClient
     
-    var body: some Reducer<State, Action> {
+    public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
                 
@@ -94,18 +94,18 @@ struct MovieDetailsFeature {
     }
     
 }
-enum Status: Equatable, Sendable {
+public enum Status: Equatable, Sendable {
     case `default`
     case loading
     case submitted
     case toast(ToastConfiguration?)
 }
-struct ToastConfiguration: Equatable, Sendable {
-    let title: String
-    let message: String
-    let type: ToastType // error, success, etc
+public struct ToastConfiguration: Equatable, Sendable {
+    public let title: String
+    public let message: String
+    public let type: ToastType // error, success, etc
 }
 
-enum ToastType: Equatable, Sendable {
+public enum ToastType: Equatable, Sendable {
     case error
 }
