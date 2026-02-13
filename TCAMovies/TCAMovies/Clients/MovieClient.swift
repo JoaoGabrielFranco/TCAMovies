@@ -13,7 +13,7 @@ struct MovieClient: Sendable {
     var fetchMovieDetails: @Sendable (Int) async throws -> MovieDetail
     
 }
-
+// MARK: - Dependency
 extension MovieClient: DependencyKey {
     static var liveValue = Self.live()
     static func live() -> Self {

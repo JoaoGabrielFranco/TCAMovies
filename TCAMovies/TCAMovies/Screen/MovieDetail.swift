@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// MARK: - Properties
 public struct MovieDetail: Codable, Equatable, Identifiable {
     public let id: Int
     public let title: String
@@ -21,6 +21,7 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
     public let revenue: Int?
     public let tagline: String?
     
+    // MARK: - Encoder
     enum CodingKeys: String, CodingKey {
         case id, title, overview, runtime, genres, budget, revenue, tagline
         case posterPath = "poster_path"
@@ -28,16 +29,15 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
         case voteAverage = "vote_average"
         case releaseDate = "release_date"
     }
-    
+    // MARK: - Error
     public enum Error: Swift.Error, Equatable, Sendable {
         case generic(String)
         
-        // Inicializador conveniente para converter erros do sistema
         init(_ error: Swift.Error) {
             self = .generic(error.localizedDescription)
         }
     }
-    
+    // MARK: - Requests
     var posterURL: URL? {
         guard let posterPath else { return nil }
         return URL.TMDB.imageURL(path: posterPath, size: .w500)
@@ -58,6 +58,7 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
                 .locale(Locale(identifier: "en_US"))
         )
     }
+    // MARK: - TimeFormatter
     var runtimeFormatted: String? {
         guard let runtime else { return nil }
         

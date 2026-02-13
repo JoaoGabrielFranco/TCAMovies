@@ -9,7 +9,7 @@ import Foundation
 
 extension URL {
     struct TMDB {
-        // MARK: - Configurações
+        // MARK: - Properties
         private static let apiHost = "api.themoviedb.org"
         private static let imageHost = "image.tmdb.org"
         private static let apiBasePath = "/3"
@@ -18,7 +18,7 @@ extension URL {
             Bundle.main.object(forInfoDictionaryKey: "MyApiKey") as? String ?? ""
         }
         
-        // MARK: - 1. Endpoints de DADOS (JSON)
+        // MARK: - Endpoints
         enum Endpoint {
             case popularMovies
             case movieDetails(id: Int)
@@ -36,7 +36,6 @@ extension URL {
                 components.host = TMDB.apiHost
                 components.path = TMDB.apiBasePath + self.path
                 
-                // Query Params (API Key, Language)
                 components.queryItems = [
                     URLQueryItem(name: "api_key", value: TMDB.apiKey),
                     URLQueryItem(name: "language", value: "en-US")
@@ -46,19 +45,20 @@ extension URL {
             }
         }
         
-        // MARK: - 2. Endpoints de IMAGEM (JPG)
-        // Imagens não usam API Key na URL e têm outro Host
         enum ImageSize: String {
-            case w500 = "/t/p/w500"
-            case original = "/t/p/original"
+            case w500 = "w500"
+            case original = "original"
         }
-        
+        // MARK: - Image
         static func imageURL(path: String, size: ImageSize) -> URL? {
-            var components = URLComponents()
-            components.scheme = "https"
-            components.host = TMDB.imageHost
-            components.path = size.rawValue + path
-            return components.url
+            
+            let baseURL = "https://image.tmdb.org/t/p"
+            
+            let cleanPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+            
+            let finalString = "\(baseURL)/\(size.rawValue)/\(cleanPath)"
+            
+            return URL(string: finalString)
         }
     }
 }

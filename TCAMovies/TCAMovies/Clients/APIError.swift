@@ -5,9 +5,8 @@
 //  Created by dti on 12/02/26.
 //
 
-// APIError.swift
 import Foundation
-
+// MARK: - Properties
 enum APIError: Error {
     case invalidURL
     case networkError(Error)

@@ -14,12 +14,14 @@ public struct Movie: Codable, Identifiable, Equatable {
     public let posterPath: String?
     public let voteAverage: Double?
     public let releaseDate: Date?
-    
+    public let backdropPath: String?
+    // MARK: - Encodable
     public enum CodingKeys: String, CodingKey {
         case id, title, overview
         case posterPath = "poster_path"
         case voteAverage = "vote_average"
         case releaseDate = "release_date"
+        case backdropPath = "backdrop_path"
     }
     enum Error: Swift.Error, Equatable {
         case generic(String)
@@ -28,6 +30,7 @@ public struct Movie: Codable, Identifiable, Equatable {
             self = .generic(error.localizedDescription)
         }
     }
+    // MARK: - DateFormatter
     var releaseDateFormatted: String {
         guard let releaseDate else { return "Unknown"}
         
@@ -39,6 +42,7 @@ public struct Movie: Codable, Identifiable, Equatable {
                 .locale(Locale(identifier: "en_US"))
         )
     }
+    // MARK: - PosterURL
     var posterURL: URL? {
         guard let posterPath else { return nil }
         return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")

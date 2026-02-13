@@ -9,8 +9,10 @@ import ComposableArchitecture
 
 @Reducer
 struct MovieFeature {
+    // MARK: - State
     @ObservableState
     struct State: Equatable {
+        // MARK: - Properties
         var movies: [Movie] = []
         var status: Status = .default
         public var isLoading: Bool {
@@ -38,7 +40,7 @@ struct MovieFeature {
             }
         }
     }
-    
+    // MARK: - Action
     enum Action: BindableAction, Equatable {
         case fetchMovies
         case binding(BindingAction<State>)
@@ -48,11 +50,10 @@ struct MovieFeature {
         case onAppear
         case fatalErrorTapped
     }
-    
-    @Dependency(\.analytics) var analytics
-    @Dependency(\.crashlytics) var crashlytics
+    // MARK: - Properties
+    @Dependency(\.analyticsClient) var analytics
     @Dependency(\.movieClient) var movieClient
-    
+    // MARK: - Reducer
     var body: some Reducer<State, Action> {
         
         BindingReducer()
@@ -64,14 +65,10 @@ struct MovieFeature {
                 
             case .onAppear:
                 return .run { send in
-                    await analytics.logEvent("screen_view", [
-                        "screen_name": "PopularMovies",
-                        "screen_class": "MovieFeatureView"
-                    ])
+                    await analytics.logEvent(.viewPopularMovies)
                     await send(.fetchMovies)
                 }
             case .fetchMovies:
-                // Mudança de estado limpa
                 state.status = .loading
                 
                 return .run { send in
@@ -79,21 +76,21 @@ struct MovieFeature {
                         let movies = try await movieClient.fetchPopularMovies()
                         await send(.handleMoviesResponse(.success(movies)))
                     } catch {
-                        // Conversão para o erro customizado
                         let customError = Movie.Error(error)
                         await send(.handleMoviesResponse(.failure(customError)))
                     }
                 }
                 
-                // Caso unificado de Handle
             case let .handleMoviesResponse(result):
                 switch result {
                 case let .success(movies):
                     state.status = .default
                     state.movies = movies
-                    
+                    return .run { _ in
+                        await analytics.logEvent(.moviesLoaded(movies))
+                    }
                 case let .failure(error):
-                    // Extração da mensagem do erro customizado
+                    
                     let message: String
                     switch error {
                     case let .generic(msg): message = msg
@@ -110,14 +107,10 @@ struct MovieFeature {
             case .fatalErrorTapped:
                 fatalError("crash!!")
             case let .movieTapped(movie):
-                analytics.logEvent("click_movie", [
-                    "screen_name": "PopularMovies",
-                    "screen_class": "MovieFeatureView",
-                    "movie_title": movie.title
-                ])
                 state.movieDetail = .init(movieID: movie.id, movieTitle: movie.title)
-                
-                return .none
+                return .run { _ in
+                    await analytics.logEvent(.clickMovie(movie))
+                }
             case .movieDetail:
                 return .none
             }
