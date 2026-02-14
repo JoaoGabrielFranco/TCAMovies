@@ -16,7 +16,8 @@ extension MovieFeature {
         var body: some SwiftUI.View {
             NavigationStack{
                 List {
-                    
+
+                    // TODO: Poderia usar os estados isLoading e errorMessage que declarou antes? Repeticao de logica
                     if store.status == .loading {
                         ProgressView().frame(width:300, height: 300)
                     } else if case let .toast(config) = store.status, let message = config?.message {
@@ -38,6 +39,7 @@ extension MovieFeature {
                             Image(systemName: "magnifyingglass")
                                 .font(.largeTitle)
                                 .foregroundStyle(.secondary)
+                            // TODO: Evite tantos modifiers na mesma linha pode gerar confusao na leitura
                             Text("There is no movie for this search, try another one").font(.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
                         }
                     }
@@ -51,6 +53,7 @@ extension MovieFeature {
                     store.send(.onAppear)
                 }
                 .toolbar {
+                    // TODO: Comentarios
                     /*Button {
                      store.send(.fatalErrorTapped)
                      } label: {
@@ -80,6 +83,8 @@ extension MovieFeature.View {
             
             .frame(width: 300, height: 300)
             Text(movie.title).font(.headline)
+
+            // TODO: E esperado mostrar Unknown ao usuario caso nao tenha esse valor? nao seria melhor em branco?
             if let vote = movie.voteAverage {
                 Text("\(vote)")
             } else {

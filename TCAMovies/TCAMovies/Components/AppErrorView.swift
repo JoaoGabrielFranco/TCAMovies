@@ -1,5 +1,5 @@
 //
-//  ErrorView.swift
+//  ErrorView.swift // TODO: Mantenha consistencia do nome do arquivo com a estrutua de dados contida nele
 //  TCAMovies
 //
 //  Created by dti on 13/02/26.
@@ -9,13 +9,13 @@ import SwiftUI
 
 // MARK: - View
 struct AppErrorView: View {
-    
+
     // MARK: - Properties
     let title: String
     let message: String
-    let imageName: String
+    let imageName: String // TODO: E se eu precisar uma imagem dos assets? Ou entao vinda de uma URL? De uma olhada no `CartWarningBanner.swift` e no `StyledAsyncImage.swift`
     let retryAction: (() -> Void)?
-    
+
     // MARK: - Initializers
     init(
         title: String = "Something went wrong",
@@ -37,19 +37,19 @@ struct AppErrorView: View {
                 .frame(width: 80, height: 80)
                 .foregroundStyle(.red.opacity(0.8))
                 .padding(.bottom, 10)
-           
                 .symbolEffect(.bounce, value: true)
-            
+
             Text(title)
                 .font(.title2)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
-            
+
             Text(message)
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 32) 
+                .padding(.horizontal, 32)
+
             if let retryAction {
                 Button(action: retryAction) {
                     Text("Try Again")
@@ -66,6 +66,7 @@ struct AppErrorView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // TODO: .background(.background) nao funcionaria?
         .background(Color(uiColor: .systemBackground))
     }
 }

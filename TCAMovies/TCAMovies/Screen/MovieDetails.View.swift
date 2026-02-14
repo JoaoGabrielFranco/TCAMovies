@@ -6,8 +6,9 @@
 //
 import SwiftUI
 import ComposableArchitecture
-// MARK: - View
+
 public extension MovieDetailsFeature {
+
     // MARK: - View
     struct View: SwiftUI.View {
         @Bindable var store: StoreOf<MovieDetailsFeature>
@@ -22,6 +23,8 @@ public extension MovieDetailsFeature {
                             .padding(.top, 50)
                         
                     case let .toast(config) where store.movieDetail == nil:
+
+                        // TODO: Crie presets pros erros para modularizar
                         AppErrorView(
                             title: config?.title ?? "Error",
                             message: config?.message ?? "Unknown error occurred",
@@ -37,6 +40,7 @@ public extension MovieDetailsFeature {
                         if let movie = store.movieDetail {
                             MovieContentView(movie: movie)
                         } else {
+                            // TODO: Nao tem algo mais didatico talvez?
                             Color.clear
                         }
                     }
@@ -48,6 +52,7 @@ public extension MovieDetailsFeature {
                 store.send(.onAppear)
             }
             .overlay(alignment: .bottom) {
+                // TODO: E possivel melhorar essa logica de toast e message. Salve o caso do status como error(String), por exemplo, ao inves do toast
                 if case let .toast(config) = store.status, let message = config?.message {
                     Text(message)
                         .foregroundStyle(.white)

@@ -9,12 +9,15 @@ import ComposableArchitecture
 
 @Reducer
 struct MovieFeature {
+
     // MARK: - State
     @ObservableState
     struct State: Equatable {
+
         // MARK: - Properties
         var movies: [Movie] = []
         var status: Status = .default
+
         public var isLoading: Bool {
             return status == .loading
         }
@@ -27,7 +30,7 @@ struct MovieFeature {
         
         @Presents var movieDetail: MovieDetailsFeature.State?
         var searchText = ""
-        
+
         var filteredMovies: [Movie] {
             if searchText.isEmpty{
                 return movies
@@ -40,6 +43,7 @@ struct MovieFeature {
             }
         }
     }
+
     // MARK: - Action
     enum Action: BindableAction, Equatable {
         case fetchMovies
@@ -50,9 +54,11 @@ struct MovieFeature {
         case onAppear
         case fatalErrorTapped
     }
+
     // MARK: - Properties
     @Dependency(\.analyticsClient) var analytics
     @Dependency(\.movieClient) var movieClient
+
     // MARK: - Reducer
     var body: some Reducer<State, Action> {
         
@@ -68,9 +74,11 @@ struct MovieFeature {
                     await analytics.logEvent(.viewPopularMovies)
                     await send(.fetchMovies)
                 }
+
             case .fetchMovies:
                 state.status = .loading
-                
+
+                // TODO: Mesmmo comentario do MovieDetailFeature
                 return .run { send in
                     do {
                         let movies = try await movieClient.fetchPopularMovies()
@@ -89,8 +97,10 @@ struct MovieFeature {
                     return .run { _ in
                         await analytics.logEvent(.moviesLoaded(movies))
                     }
+
                 case let .failure(error):
-                    
+                    // TODO: Mesmmo comentario do MovieDetailFeature
+
                     let message: String
                     switch error {
                     case let .generic(msg): message = msg
@@ -111,6 +121,8 @@ struct MovieFeature {
                 return .run { _ in
                     await analytics.logEvent(.clickMovie(movie))
                 }
+
+                // TODO: Considere usar o default nesses casos para evitar repetir .movieDetail e .binding retornando none
             case .movieDetail:
                 return .none
             }

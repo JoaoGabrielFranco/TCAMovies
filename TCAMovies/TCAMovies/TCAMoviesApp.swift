@@ -10,6 +10,8 @@ import ComposableArchitecture
 import FirebaseCore
 import FirebaseCrashlytics
 
+// TODO: Coloque AppDelegate em um arquivo separado
+
 // MARK: - Delegate
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -19,6 +21,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
 }
+
 // MARK: - App
 @main
 struct MovieApp: App {

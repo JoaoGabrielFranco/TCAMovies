@@ -6,8 +6,10 @@
 //
 
 import Foundation
-// MARK: - Properties
+
 public struct MovieDetail: Codable, Equatable, Identifiable {
+
+    // MARK: - Properties
     public let id: Int
     public let title: String
     public let overview: String?
@@ -29,7 +31,9 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
         case voteAverage = "vote_average"
         case releaseDate = "release_date"
     }
+
     // MARK: - Error
+    // TODO: Mesmo questionamento do APIError
     public enum Error: Swift.Error, Equatable, Sendable {
         case generic(String)
         
@@ -47,6 +51,8 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
         guard let backdropPath else { return nil }
         return URL.TMDB.imageURL(path: backdropPath, size: .original)
     }
+
+    // TODO: Repeticao de codigo do Movie.swiftt?
     var releaseDateFormatted: String {
         guard let releaseDate else { return "Unknown"}
         
@@ -59,6 +65,7 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
         )
     }
     // MARK: - TimeFormatter
+    // TODO: Desafio: Entender como isso e feito no projeto, levando em conta que rodamos o app no brasil e nos EUA
     var runtimeFormatted: String? {
         guard let runtime else { return nil }
         
@@ -66,7 +73,7 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
         formatter.unitsStyle = .abbreviated
         formatter.allowedUnits = [.hour, .minute]
         
-        
+        // TODO: let
         var calendar = Calendar.current
         calendar.locale = Locale(identifier: "en_US")
         formatter.calendar = calendar
@@ -81,3 +88,4 @@ public struct MovieDetail: Codable, Equatable, Identifiable {
 }
 
 
+// TODO: Esta muito baguncado as informacoes nesse arquivo. De uma olhada no projetoTO com os MARKS: Interface, Properties, Helper...

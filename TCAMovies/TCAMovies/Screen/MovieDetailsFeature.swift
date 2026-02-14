@@ -10,18 +10,22 @@ import ComposableArchitecture
 
 @Reducer
 public struct MovieDetailsFeature {
+
     // MARK: - State
     @ObservableState
-    
     public struct State: Equatable {
+
         // MARK: - Properties
         public let movieID: Int
         public let movieTitle: String
         public var movieDetail: MovieDetail?
         public var status: Status = .default
+
+        // MARK: - Interface
         public var isLoading: Bool {
             return status == .loading
         }
+
         public var errorMessage: String? {
             if case let .toast(config) = status {
                 return config?.message
@@ -36,9 +40,11 @@ public struct MovieDetailsFeature {
         case handleMovieDetailsResponse(Result<MovieDetail, MovieDetail.Error>)
         case onAppear
     }
+
     // MARK: - Properties
     @Dependency(\.analyticsClient) var analytics
     @Dependency(\.movieClient) var movieClient
+
     // MARK: - Reducer
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -46,23 +52,26 @@ public struct MovieDetailsFeature {
                 
             case .onAppear:
                 return .run { [id = state.movieID, title = state.movieTitle] send in
-                    
-                    
                     await analytics.logEvent(.viewMovieDetail(id: id, title: title))
-                    
                     await send(.fetchMovieDetails)
                 }
                 
-            case .fetchMovieDetails:
+            case .fetchMovieDetails:essa
                 state.status = .loading
-                
+
+                // TODO: Testar essa estrutura
+                /*
+                 return .run { send in
+                     await send(.internal(.handleMovieDetailsResponse(Result {
+                         try await movieClient.fetchMovieDetails(movieID)
+                     })), animation: .default)
+                 }
+                 */
+
                 return .run { [movieID = state.movieID] send in
                     do {
                         let detail = try await movieClient.fetchMovieDetails(movieID)
-                        
-                        
                         await send(.handleMovieDetailsResponse(.success(detail)))
-                        
                     } catch {
                         let customError = MovieDetail.Error(error)
                         await send(.handleMovieDetailsResponse(.failure(customError)))
@@ -77,7 +86,7 @@ public struct MovieDetailsFeature {
                     state.movieDetail = detail
                     
                 case let .failure(error):
-                    
+                    // TODO: Simpifique essa logica. De uma olhada nos `let .failure(error)` do projeto
                     let message: String
                     switch error {
                     case let .generic(msg):
@@ -96,14 +105,19 @@ public struct MovieDetailsFeature {
     }
     
 }
+
+// TODO: Mova para um arquivo separado
 // MARK: - ActionProperties
 public enum Status: Equatable, Sendable {
     case `default`
     case loading
-    case submitted
+    case submitted // TODO: Nao e necessario
     case toast(ToastConfiguration?)
 }
+
 public struct ToastConfiguration: Equatable, Sendable {
+
+    // MARK: - Properties
     public let title: String
     public let message: String
     public let type: ToastType

@@ -5,10 +5,12 @@
 //  Created by dti on 13/02/26.
 //
 import SwiftUI
-// MARK: - View
+
 struct MovieRowView: View {
+
     // MARK: - Properties
     let movie: Movie
+
     // MARK: - View
     var body: some View {
         HStack {

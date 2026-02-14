@@ -6,15 +6,16 @@
 //
 import SwiftUI
 
-//MARK: - View
 public struct MovieContentView: View {
+
     // MARK: - Properties
     let movie: MovieDetail
+
     // MARK: - View
     public var body: some View {
+        // TODO: Para evitar numeros magicos, como em padding e spacing, devem ser padronizados em um arquivo de style. De uma olhada como funciona: `View+Padding.swift`, `View+Spacing.swift`,`Font+Style.swift`, `Color+Style.swift`,
         VStack(alignment: .leading, spacing: 16) {
-            
-            
+
             AsyncImage(url: movie.backdropURL) { image in
                 image
                     .resizable()
@@ -28,6 +29,7 @@ public struct MovieContentView: View {
                             .foregroundStyle(.secondary)
                     }
             }
+            // TODO: Atencao aos comentarios
             //            .frame(width: 100, height: 100)
             //            .padding()
             .clipped()
@@ -68,7 +70,15 @@ public struct MovieContentView: View {
             .padding()
         }
     }
-    // MARK: - InfoRow
+
+/*
+}
+// TODO: Dessa forma nao precisa marcar todas as subviews como private tambem
+// MARK: - Subviews
+private extension MovieContentView {
+
+ */
+
     private var infoRow: some View {
         HStack(spacing: 16) {
             if let rating = movie.voteAverage {
@@ -91,10 +101,11 @@ public struct MovieContentView: View {
         .font(.subheadline)
         .foregroundStyle(.secondary)
     }
-    // MARK: - Genres
+
     private func genresList(_ genres: [MovieDetail.Genre]) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
+                // TODO: Pequise quando `ForEach(genres, id: \.self)` seria necessario, passando um id
                 ForEach(genres) { genre in
                     Text(genre.name)
                         .font(.caption)
@@ -107,7 +118,7 @@ public struct MovieContentView: View {
             }
         }
     }
-    // MARK: Finance
+
     private var financeSection: some View {
         Group {
             if let budget = movie.budget, budget > 0 {
