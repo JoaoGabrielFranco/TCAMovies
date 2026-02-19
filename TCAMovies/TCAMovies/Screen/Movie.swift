@@ -2,12 +2,12 @@
 //  Movie.swift
 //  TCAMovies
 //
-//  Created by dti on 05/02/26.
+//  Created by João Gabriel Soares on 05/02/26.
 //
 import Foundation
 
 // MARK: - Properties
-public struct Movie: Codable, Identifiable, Equatable {
+public struct Movie: Codable, Sendable, Identifiable, Equatable {
     public let id: Int
     public let title: String
     public let overview: String?
@@ -49,6 +49,6 @@ public struct Movie: Codable, Identifiable, Equatable {
     }
 }
 
-struct MovieResponse: Codable, Equatable {
+struct MovieResponse: Codable, Equatable, Sendable {
     let results: [Movie]
 }

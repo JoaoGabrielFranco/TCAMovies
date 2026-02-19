@@ -2,7 +2,7 @@
 //  MovieRowView.swift
 //  TCAMovies
 //
-//  Created by dti on 13/02/26.
+//  Created by João Gabriel Soares on 13/02/26.
 //
 import SwiftUI
 // MARK: - View

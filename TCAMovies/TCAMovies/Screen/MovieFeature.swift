@@ -2,7 +2,7 @@
 //  MovieFeature.swift
 //  TCAMovies
 //
-//  Created by dti on 05/02/26.
+//  Created by João Gabriel Soares on 05/02/26.
 //
 import Foundation
 import ComposableArchitecture

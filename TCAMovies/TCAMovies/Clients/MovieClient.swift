@@ -2,7 +2,7 @@
 //  MoviesClient.swift
 //  TCAMovies
 //
-//  Created by dti on 05/02/26.
+//  Created by João Gabriel Soares on 05/02/26.
 //
 import Foundation
 import ComposableArchitecture
@@ -13,19 +13,20 @@ struct MovieClient: Sendable {
     var fetchMovieDetails: @Sendable (Int) async throws -> MovieDetail
     
 }
+
 // MARK: - Dependency
 extension MovieClient: DependencyKey {
-    static var liveValue = Self.live()
-    static func live() -> Self {
-        let apiClient = APIClient()
-        return Self(
-            fetchPopularMovies: {
-                let response: MovieResponse = try await apiClient.request(endpoint: .popularMovies)
-                return response.results
-            }, fetchMovieDetails: { id in
-                return try await apiClient.request(endpoint: .movieDetails(id: id))
-            }
-        )
+    static var liveValue: MovieClient {
+            @Dependency(\.apiClient) var apiClient
+            
+            return Self(
+                fetchPopularMovies: {
+                    let response: MovieResponse = try await apiClient.request(.popularMovies)
+                    return response.results
+                }, fetchMovieDetails: { id in
+                    return try await apiClient.request(.movieDetails(id: id))
+                }
+            )
     }
     
 }

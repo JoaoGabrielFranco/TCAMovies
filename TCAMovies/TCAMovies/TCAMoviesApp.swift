@@ -2,7 +2,7 @@
 //  TCAMoviesApp.swift
 //  TCAMovies
 //
-//  Created by dti on 05/02/26.
+//  Created by João Gabriel Soares on 05/02/26.
 //
 
 import SwiftUI
@@ -10,15 +10,7 @@ import ComposableArchitecture
 import FirebaseCore
 import FirebaseCrashlytics
 
-// MARK: - Delegate
-class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        FirebaseApp.configure()
-        Crashlytics.crashlytics()
-        print("Firebase Configurado!")
-        return true
-    }
-}
+
 // MARK: - App
 @main
 struct MovieApp: App {

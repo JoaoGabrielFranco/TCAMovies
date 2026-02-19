@@ -2,7 +2,7 @@
 //  MovieDetailFeature.swift
 //  TCAMovies
 //
-//  Created by dti on 09/02/26.
+//  Created by João Gabriel Soares on 09/02/26.
 //
 
 import Foundation

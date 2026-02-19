@@ -2,7 +2,7 @@
 //  URL+Extensions.swift
 //  TCAMovies
 //
-//  Created by dti on 12/02/26.
+//  Created by João Gabriel Soares on 12/02/26.
 //
 
 import Foundation
