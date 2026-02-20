@@ -8,23 +8,21 @@
 import Foundation
 import ComposableArchitecture
 
-
-struct APIClient {
+struct APIClient: Sendable {
     // MARK: - Properties
     var request: @Sendable (URL.TMDB.Endpoint) async throws -> Data
     
-    func request<T: Decodable & Sendable>(_ endpoint: URL.TMDB.Endpoint) async throws -> T {
-        let data = try await self.request(endpoint)
-        return try Self.decoder.decode(T.self, from: data)
-    }
     
-    static let decoder: JSONDecoder = {
+    func request<T: Decodable>(_ endpoint: URL.TMDB.Endpoint) async throws -> T {
+        let data = try await self.request(endpoint)
+        
         let decoder = JSONDecoder()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        return decoder
-    }()
+        
+        return try decoder.decode(T.self, from: data)
+    }
 }
 
 extension APIClient: DependencyKey {
@@ -33,6 +31,7 @@ extension APIClient: DependencyKey {
     static var live: Self {
         return Self(
             request: { endpoint in
+                
                 guard let url = await endpoint.url else {
                     throw APIError.invalidURL
                 }

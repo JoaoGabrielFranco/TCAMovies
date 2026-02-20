@@ -4,7 +4,6 @@
 //
 //  Created by João Gabriel Soares on 05/02/26.
 //
-import Foundation
 import ComposableArchitecture
 
 struct MovieClient: Sendable {
@@ -17,16 +16,16 @@ struct MovieClient: Sendable {
 // MARK: - Dependency
 extension MovieClient: DependencyKey {
     static var liveValue: MovieClient {
-            @Dependency(\.apiClient) var apiClient
-            
-            return Self(
-                fetchPopularMovies: {
-                    let response: MovieResponse = try await apiClient.request(.popularMovies)
-                    return response.results
-                }, fetchMovieDetails: { id in
-                    return try await apiClient.request(.movieDetails(id: id))
-                }
-            )
+        @Dependency(\.apiClient) var apiClient
+        
+        return Self(
+            fetchPopularMovies: {
+                let response: MovieResponse = try await apiClient.request(.popularMovies)
+                return response.results
+            }, fetchMovieDetails: { id in
+                return try await apiClient.request(.movieDetails(id: id))
+            }
+        )
     }
     
 }

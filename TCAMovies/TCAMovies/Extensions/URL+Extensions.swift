@@ -8,18 +8,20 @@
 import Foundation
 
 extension URL {
-    struct TMDB {
+    struct TMDB: Sendable { 
         // MARK: - Properties
         private static let apiHost = "api.themoviedb.org"
         private static let imageHost = "image.tmdb.org"
         private static let apiBasePath = "/3"
         
+        
         private static var apiKey: String {
-            Bundle.main.object(forInfoDictionaryKey: "MyApiKey") as? String ?? ""
+            return "babc277d0d8a570e611160f511084b7b"
+            
         }
         
         // MARK: - Endpoints
-        enum Endpoint {
+        enum Endpoint: Sendable {
             case popularMovies
             case movieDetails(id: Int)
             
@@ -29,6 +31,7 @@ extension URL {
                 case .movieDetails(let id): return "/movie/\(id)"
                 }
             }
+            
             
             var url: URL? {
                 var components = URLComponents()
@@ -45,19 +48,16 @@ extension URL {
             }
         }
         
-        enum ImageSize: String {
+        enum ImageSize: String, Sendable {
             case w500 = "w500"
             case original = "original"
         }
+        
         // MARK: - Image
         static func imageURL(path: String, size: ImageSize) -> URL? {
-            
             let baseURL = "https://image.tmdb.org/t/p"
-            
             let cleanPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
-            
             let finalString = "\(baseURL)/\(size.rawValue)/\(cleanPath)"
-            
             return URL(string: finalString)
         }
     }

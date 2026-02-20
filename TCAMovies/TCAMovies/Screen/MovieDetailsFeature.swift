@@ -9,7 +9,7 @@ import Foundation
 import ComposableArchitecture
 
 @Reducer
-public struct MovieDetailsFeature {
+public struct MovieDetailsFeature: Sendable {
     // MARK: - State
     @ObservableState
     
