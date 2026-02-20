@@ -17,7 +17,7 @@ extension AnalyticsEvent {
         )
     }
     
-    static func clickMovie(_ movie: Movie) -> Self {
+    static func clickMovie(for movie: Movie) -> Self {
         return AnalyticsEvent(
             name: "click_movie",
             parameters: [
@@ -28,7 +28,7 @@ extension AnalyticsEvent {
             ]
         )
     }
-    static func moviesLoaded(_ movies: [Movie]) -> Self {
+    static func moviesLoaded(for movies: [Movie]) -> Self {
         
         let itemsArray = movies.prefix(20).map { movie -> [String: Any] in
             [
@@ -57,8 +57,3 @@ extension AnalyticsEvent {
         )
     }
 }
-
-
-
-
-

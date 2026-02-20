@@ -44,7 +44,7 @@ struct MovieFeature: Sendable {
     enum Action: BindableAction, Equatable {
         case fetchMovies
         case binding(BindingAction<State>)
-        case handleMoviesResponse(Result<[Movie], Movie.Error>)
+        case handleMoviesResponse(Result<[Movie], Movie.MovieError>)
         case movieTapped(Movie)
         case movieDetail(PresentationAction<MovieDetailsFeature.Action>)
         case onAppear
@@ -76,7 +76,7 @@ struct MovieFeature: Sendable {
                         let movies = try await movieClient.fetchPopularMovies()
                         await send(.handleMoviesResponse(.success(movies)))
                     } catch {
-                        let customError = Movie.Error(error)
+                        let customError = Movie.MovieError(error)
                         await send(.handleMoviesResponse(.failure(customError)))
                     }
                 }
@@ -87,7 +87,7 @@ struct MovieFeature: Sendable {
                     state.status = .default
                     state.movies = movies
                     return .run { _ in
-                        await analytics.logEvent(.moviesLoaded(movies))
+                        await analytics.logEvent(.moviesLoaded(for: movies))
                     }
                 case let .failure(error):
                     
@@ -109,7 +109,7 @@ struct MovieFeature: Sendable {
             case let .movieTapped(movie):
                 state.movieDetail = .init(movieID: movie.id, movieTitle: movie.title)
                 return .run { _ in
-                    await analytics.logEvent(.clickMovie(movie))
+                    await analytics.logEvent(.clickMovie(for: movie))
                 }
             case .movieDetail:
                 return .none

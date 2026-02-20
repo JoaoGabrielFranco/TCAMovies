@@ -28,8 +28,7 @@ public struct MovieContentView: View {
                             .foregroundStyle(.secondary)
                     }
             }
-            //            .frame(width: 100, height: 100)
-            //            .padding()
+            .padding()
             .clipped()
             
             VStack(alignment: .leading, spacing: 12) {
@@ -68,8 +67,11 @@ public struct MovieContentView: View {
             .padding()
         }
     }
+    
+}
+private extension MovieContentView {
     // MARK: - InfoRow
-    private var infoRow: some View {
+    var infoRow: some View {
         HStack(spacing: 16) {
             if let rating = movie.voteAverage {
                 HStack(spacing: 4) {
@@ -92,7 +94,7 @@ public struct MovieContentView: View {
         .foregroundStyle(.secondary)
     }
     // MARK: - Genres
-    private func genresList(_ genres: [MovieDetail.Genre]) -> some View {
+    func genresList(_ genres: [MovieDetail.Genre]) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(genres) { genre in
@@ -108,7 +110,7 @@ public struct MovieContentView: View {
         }
     }
     // MARK: Finance
-    private var financeSection: some View {
+    var financeSection: some View {
         Group {
             if let budget = movie.budget, budget > 0 {
                 LabeledContent("Budget", value: budget, format: .currency(code: "USD"))
