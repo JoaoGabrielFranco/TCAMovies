@@ -26,26 +26,18 @@ public struct Movie: Codable, Sendable, Identifiable, Equatable {
         case backdropPath = "backdrop_path"
     }
     
-    public enum MovieError: Swift.Error, Equatable, Sendable {
-        case generic(String)
-        
-        init(_ error: Swift.Error) {
-            self = .generic(error.localizedDescription)
-        }
-    }
 }
 
-// MARK: - Helpers (Extensions)
+// MARK: - Helpers
 extension Movie {
     public var releaseDateFormatted: String {
-        guard let releaseDate = releaseDate else { return "Unknown" }
+        guard let releaseDate = releaseDate else { return "" }
         
         return releaseDate.formatted(date: .abbreviated, time: .omitted)
     }
-    
     public var posterURL: URL? {
         guard let posterPath = posterPath else { return nil }
-        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")
+        return URL.TMDB.imageURL(path: posterPath, size: .w500)
     }
 }
 

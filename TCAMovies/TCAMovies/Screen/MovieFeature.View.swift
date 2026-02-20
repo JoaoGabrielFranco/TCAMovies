@@ -38,7 +38,10 @@ extension MovieFeature {
                             Image(systemName: "magnifyingglass")
                                 .font(.largeTitle)
                                 .foregroundStyle(.secondary)
-                            Text("There is no movie for this search, try another one").font(.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                            Text("There is no movie for this search, try another one")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
                         }
                     }
                 }
@@ -83,7 +86,7 @@ extension MovieFeature.View {
             if let vote = movie.voteAverage {
                 Text("\(vote)")
             } else {
-                Text("Unknown")
+                Text("")
             }
             
         }

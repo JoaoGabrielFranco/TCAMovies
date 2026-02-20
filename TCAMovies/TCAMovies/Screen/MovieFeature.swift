@@ -11,7 +11,7 @@ import ComposableArchitecture
 struct MovieFeature: Sendable {
     // MARK: - State
     @ObservableState
-    struct State: Equatable {
+    struct State: Equatable, Sendable {
         // MARK: - Properties
         var movies: [Movie] = []
         var status: Status = .default
@@ -41,12 +41,12 @@ struct MovieFeature: Sendable {
         }
     }
     // MARK: - Action
-    enum Action: BindableAction, Equatable {
-        case fetchMovies
-        case binding(BindingAction<State>)
-        case handleMoviesResponse(Result<[Movie], Movie.MovieError>)
-        case movieTapped(Movie)
+    enum Action: BindableAction, Equatable, Sendable {
         case movieDetail(PresentationAction<MovieDetailsFeature.Action>)
+        case binding(BindingAction<MovieFeature.State>)
+        case fetchMovies
+        case handleMoviesResponse(Result<[Movie], APIError>)
+        case movieTapped(Movie)
         case onAppear
         case fatalErrorTapped
     }
@@ -60,8 +60,6 @@ struct MovieFeature: Sendable {
         
         Reduce { state, action in
             switch action {
-            case .binding:
-                return .none
                 
             case .onAppear:
                 return .run { send in
@@ -76,8 +74,8 @@ struct MovieFeature: Sendable {
                         let movies = try await movieClient.fetchPopularMovies()
                         await send(.handleMoviesResponse(.success(movies)))
                     } catch {
-                        let customError = Movie.MovieError(error)
-                        await send(.handleMoviesResponse(.failure(customError)))
+                        let apiError = error as? APIError ?? .networkError(error.localizedDescription)
+                        await send(.handleMoviesResponse(.failure(apiError)))
                     }
                 }
                 
@@ -91,14 +89,10 @@ struct MovieFeature: Sendable {
                     }
                 case let .failure(error):
                     
-                    let message: String
-                    switch error {
-                    case let .generic(msg): message = msg
-                    }
                     
                     state.status = .toast(ToastConfiguration(
                         title: "Error",
-                        message: message,
+                        message: error.message,
                         type: .error
                     ))
                 }
@@ -111,9 +105,11 @@ struct MovieFeature: Sendable {
                 return .run { _ in
                     await analytics.logEvent(.clickMovie(for: movie))
                 }
-            case .movieDetail:
+            default:
                 return .none
+                
             }
+            
         }
         .ifLet(\.$movieDetail, action: \.movieDetail) {
             MovieDetailsFeature()

@@ -71,14 +71,6 @@ public struct MovieDetail: Codable, Equatable, Identifiable, Sendable {
         public let name: String
     }
     
-    // MARK: - Error
-    public enum Error: Swift.Error, Equatable, Sendable {
-        case generic(String)
-        
-        init(_ error: Swift.Error) {
-            self = .generic(error.localizedDescription)
-        }
-    }
 }
 
 // MARK: - Extensions
@@ -96,7 +88,7 @@ public extension MovieDetail {
     
     // MARK: - Formatters
     var releaseDateFormatted: String {
-        guard let releaseDate else { return "Unknown"}
+        guard let releaseDate else { return ""}
         
         return releaseDate.formatted(
             .dateTime

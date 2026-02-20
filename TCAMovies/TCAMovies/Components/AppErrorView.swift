@@ -10,6 +10,12 @@ import SwiftUI
 // MARK: - View
 struct AppErrorView: View {
     
+    // Dúvida aqui
+    public enum Contents {
+        case url(URL?)
+        
+    }
+    
     // MARK: - Properties
     let title: String
     let message: String
@@ -66,7 +72,7 @@ struct AppErrorView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: .systemBackground))
+        .background(.background)
     }
 }
 

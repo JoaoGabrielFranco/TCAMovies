@@ -7,7 +7,7 @@
 import SwiftUI
 import ComposableArchitecture
 // MARK: - View
-public extension MovieDetailsFeature {
+extension MovieDetailsFeature {
     // MARK: - View
     struct View: SwiftUI.View {
         @Bindable var store: StoreOf<MovieDetailsFeature>

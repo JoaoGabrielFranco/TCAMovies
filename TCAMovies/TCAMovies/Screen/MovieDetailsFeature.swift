@@ -9,20 +9,20 @@ import Foundation
 import ComposableArchitecture
 
 @Reducer
-public struct MovieDetailsFeature: Sendable {
+struct MovieDetailsFeature: Sendable {
     // MARK: - State
     @ObservableState
     
-    public struct State: Equatable {
+    struct State: Equatable {
         // MARK: - Properties
-        public let movieID: Int
-        public let movieTitle: String
-        public var movieDetail: MovieDetail?
-        public var status: Status = .default
-        public var isLoading: Bool {
+        let movieID: Int
+        let movieTitle: String
+        var movieDetail: MovieDetail?
+        var status: Status = .default
+        var isLoading: Bool {
             return status == .loading
         }
-        public var errorMessage: String? {
+        var errorMessage: String? {
             if case let .toast(config) = status {
                 return config?.message
             }
@@ -31,16 +31,16 @@ public struct MovieDetailsFeature: Sendable {
     }
     
     // MARK: - Action
-    public enum Action: Equatable {
+    enum Action: Equatable {
         case fetchMovieDetails
-        case handleMovieDetailsResponse(Result<MovieDetail, MovieDetail.Error>)
+        case handleMovieDetailsResponse(Result<MovieDetail, APIError>)
         case onAppear
     }
     // MARK: - Properties
     @Dependency(\.analyticsClient) var analytics
     @Dependency(\.movieClient) var movieClient
     // MARK: - Reducer
-    public var body: some Reducer<State, Action> {
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
                 
@@ -64,8 +64,8 @@ public struct MovieDetailsFeature: Sendable {
                         await send(.handleMovieDetailsResponse(.success(detail)))
                         
                     } catch {
-                        let customError = MovieDetail.Error(error)
-                        await send(.handleMovieDetailsResponse(.failure(customError)))
+                        let apiError = error as? APIError ?? .networkError(error.localizedDescription)
+                        await send(.handleMovieDetailsResponse(.failure(apiError)))
                     }
                 }
                 
@@ -78,15 +78,9 @@ public struct MovieDetailsFeature: Sendable {
                     
                 case let .failure(error):
                     
-                    let message: String
-                    switch error {
-                    case let .generic(msg):
-                        message = msg
-                    }
-                    
                     state.status = .toast(ToastConfiguration(
-                        title: "Error",
-                        message: message,
+                        title: "Loading Error",
+                        message: error.message,
                         type: .error
                     ))
                 }
@@ -97,18 +91,18 @@ public struct MovieDetailsFeature: Sendable {
     
 }
 // MARK: - ActionProperties
-public enum Status: Equatable, Sendable {
+enum Status: Equatable, Sendable {
     case `default`
     case loading
     case submitted
     case toast(ToastConfiguration?)
 }
-public struct ToastConfiguration: Equatable, Sendable {
+struct ToastConfiguration: Equatable, Sendable {
     public let title: String
     public let message: String
     public let type: ToastType
 }
 
-public enum ToastType: Equatable, Sendable {
+enum ToastType: Equatable, Sendable {
     case error
 }

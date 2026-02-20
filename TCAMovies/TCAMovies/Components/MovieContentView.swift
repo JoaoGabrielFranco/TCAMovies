@@ -6,7 +6,6 @@
 //
 import SwiftUI
 
-//MARK: - View
 public struct MovieContentView: View {
     // MARK: - Properties
     let movie: MovieDetail

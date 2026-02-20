@@ -54,7 +54,7 @@ extension APIClient: DependencyKey {
                 } catch let error as APIError {
                     throw error
                 } catch {
-                    throw APIError.networkError(error)
+                    throw APIError.networkError(error.localizedDescription)
                 }
             }
         )
