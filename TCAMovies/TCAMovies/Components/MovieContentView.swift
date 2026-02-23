@@ -11,7 +11,7 @@ public struct MovieContentView: View {
     let movie: MovieDetail
     // MARK: - View
     public var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: Spacing.large.rawValue) {
             
             
             AsyncImage(url: movie.backdropURL) { image in
@@ -30,7 +30,7 @@ public struct MovieContentView: View {
             .padding()
             .clipped()
             
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: Spacing.medium.rawValue) {
                 
                 Text(movie.title)
                     .font(.largeTitle)
@@ -49,11 +49,11 @@ public struct MovieContentView: View {
                 }
                 
                 Divider()
-                    .padding(.vertical, 8)
+                    .padding(.vertical, Spacing.extraSmall.rawValue)
                 
                 
                 if let overview = movie.overview, !overview.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.extraSmall.rawValue) {
                         Text("Overview")
                             .font(.headline)
                         Text(overview)
@@ -71,9 +71,9 @@ public struct MovieContentView: View {
 private extension MovieContentView {
     // MARK: - InfoRow
     var infoRow: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: Spacing.large.rawValue) {
             if let rating = movie.voteAverage {
-                HStack(spacing: 4) {
+                HStack(spacing: Spacing.extraExtraExtraSmall.rawValue) {
                     Image(systemName: "star.fill")
                         .foregroundStyle(.yellow)
                     Text(rating.formatted(.number.precision(.fractionLength(1))))
@@ -99,8 +99,8 @@ private extension MovieContentView {
                 ForEach(genres) { genre in
                     Text(genre.name)
                         .font(.caption)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
+                        .padding(.horizontal, Spacing.medium.rawValue)
+                        .padding(.vertical, Spacing.extraExtraExtraSmall.rawValue)
                         .background(Color.blue.opacity(0.1))
                         .foregroundStyle(.blue)
                         .clipShape(Capsule())
@@ -108,7 +108,7 @@ private extension MovieContentView {
             }
         }
     }
-    // MARK: Finance
+    // MARK: - Finance
     var financeSection: some View {
         Group {
             if let budget = movie.budget, budget > 0 {

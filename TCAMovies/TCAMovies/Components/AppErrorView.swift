@@ -6,15 +6,9 @@
 //
 
 import SwiftUI
-
-// MARK: - View
+import ComposableArchitecture
+import Foundation
 struct AppErrorView: View {
-    
-    // Dúvida aqui
-    public enum Contents {
-        case url(URL?)
-        
-    }
     
     // MARK: - Properties
     let title: String
@@ -34,15 +28,16 @@ struct AppErrorView: View {
         self.imageName = imageName
         self.retryAction = retryAction
     }
+    
     // MARK: - View
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: Spacing.small.rawValue) {
             Image(systemName: imageName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)
                 .foregroundStyle(.red.opacity(0.8))
-                .padding(.bottom, 10)
+                .padding(.bottom, Spacing.small.rawValue)
            
                 .symbolEffect(.bounce, value: true)
             
@@ -55,19 +50,19 @@ struct AppErrorView: View {
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 32) 
+                .padding(.horizontal, Spacing.extraExtraLarge.rawValue)
             if let retryAction {
                 Button(action: retryAction) {
                     Text("Try Again")
                         .font(.headline)
                         .foregroundStyle(.white)
-                        .frame(height: 50)
+                        .frame(height: Spacing.extraExtraExtraLarge.rawValue)
                         .frame(maxWidth: .infinity)
                         .background(Color.blue)
                         .cornerRadius(12)
-                        .padding(.horizontal, 50)
+                        .padding(.horizontal, Spacing.extraExtraExtraLarge.rawValue)
                 }
-                .padding(.top, 10)
+                .padding(.top, Spacing.small.rawValue)
             }
         }
         .padding()

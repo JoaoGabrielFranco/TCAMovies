@@ -5,7 +5,7 @@
 //  Created by João Gabriel Soares on 13/02/26.
 //
 import SwiftUI
-// MARK: - View
+
 struct MovieRowView: View {
     // MARK: - Properties
     let movie: Movie
@@ -22,7 +22,7 @@ struct MovieRowView: View {
             .frame(width: 80, height: 120)
             .cornerRadius(8)
             
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: Spacing.extraExtraExtraSmall.rawValue) {
                 Text(movie.title)
                     .font(.headline)
                     .lineLimit(2)
@@ -33,7 +33,7 @@ struct MovieRowView: View {
                 
                 
                 if let rating = movie.voteAverage {
-                    HStack(spacing: 4) {
+                    HStack(spacing: Spacing.extraExtraExtraSmall.rawValue) {
                         Image(systemName: "star.fill")
                             .foregroundColor(.yellow)
                         Text(String(format: "%.1f", rating))
@@ -49,7 +49,7 @@ struct MovieRowView: View {
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Spacing.extraExtraExtraSmall.rawValue)
     }
 }
 

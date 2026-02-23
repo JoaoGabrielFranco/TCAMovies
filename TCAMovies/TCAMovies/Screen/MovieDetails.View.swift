@@ -6,7 +6,7 @@
 //
 import SwiftUI
 import ComposableArchitecture
-// MARK: - View
+
 extension MovieDetailsFeature {
     // MARK: - View
     struct View: SwiftUI.View {
@@ -19,7 +19,7 @@ extension MovieDetailsFeature {
                     case .loading:
                         ProgressView()
                             .frame(maxWidth: .infinity, minHeight: 200)
-                            .padding(.top, 50)
+                            .padding(.top, Spacing.extraExtraExtraLarge.rawValue)
                         
                     case let .toast(config) where store.movieDetail == nil:
                         AppErrorView(
@@ -31,7 +31,7 @@ extension MovieDetailsFeature {
                                 store.send(.fetchMovieDetails)
                             }
                         )
-                        .padding(.top, 50)
+                        .padding(.top, Spacing.extraExtraExtraLarge.rawValue)
                         
                     default:
                         if let movie = store.movieDetail {

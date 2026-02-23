@@ -24,7 +24,7 @@ struct APIClient: Sendable {
         return try decoder.decode(T.self, from: data)
     }
 }
-
+// MARK: - Extension
 extension APIClient: DependencyKey {
     static var liveValue: APIClient = .live
     
